@@ -1,0 +1,4 @@
+.build/
+build.sh
+.replit
+replit.nix
