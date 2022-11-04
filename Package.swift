@@ -9,6 +9,7 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "SwiftSnake",
-            dependencies: ["Rainbow"])
+            dependencies: ["Rainbow"]
+		)
     ]
 )

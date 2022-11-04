@@ -1,8 +1,13 @@
 import Foundation
 import Rainbow
 
-let boardSize = 20
-let boardArraySize = boardSize - 1
+print("Enter size of map (default: 20):", terminator: " ")
+let mapSize = Int(readLine() ?? "20") ?? 20
+
+print("Enter speed of snake (default: 0.2):", terminator: " ")
+let snakeSpeed = Float(readLine() ?? "0.2") ?? 0.2
+
+let mapArraySize = mapSize - 1
 
 enum CellType {
 	case g // ground
@@ -11,13 +16,13 @@ enum CellType {
 }
 
 // create a blank board template
-var blankBoard: [[CellType]] = []
-for _ in 0...boardArraySize {
+var blankMap: [[CellType]] = []
+for _ in 0...mapArraySize {
 	var row: [CellType] = []
-	for _ in 0...boardArraySize {
+	for _ in 0...mapArraySize {
 		row.append(.g)
 	}
-	blankBoard.append(row)
+	blankMap.append(row)
 }
 
 /// Represents the coordinates of a cell.
@@ -80,7 +85,7 @@ struct Snake {
 }
 
 var snake = Snake()
-var fruit = Position(x: boardArraySize - 1, y: boardArraySize - 1)
+var fruit = Position(x: mapArraySize - 1, y: mapArraySize - 1)
 
 // see input.swift
 startInput()
@@ -89,14 +94,14 @@ startInput()
 while true {
 	snake.advance()
 	snake.hasTurned = false
-	var board: [[CellType]] = blankBoard
+	var map: [[CellType]] = blankMap
 
-	board[fruit.y][fruit.x] = .f
+	map[fruit.y][fruit.x] = .f
 	for position in snake.positions {
-		if (position.x > boardArraySize || position.y > boardArraySize) || (position.x < 0 || position.y < 0) {
+		if (position.x > mapArraySize || position.y > mapArraySize) || (position.x < 0 || position.y < 0) {
 			continue
 		}
-		board[position.y][position.x] = .s
+		map[position.y][position.x] = .s
 	}
 
 	// check if the snake is eating a fruit, and grow the tail if so
@@ -109,11 +114,11 @@ while true {
 			case .right: snake.positions.insert(Position(x: tail.x - 1, y: tail.y), at: 0)
 		}
 		// re-randomise the fruit
-		fruit = Position(x: Int.random(in: 0...boardArraySize), y: Int.random(in: 0...boardArraySize))
+		fruit = Position(x: Int.random(in: 0...mapArraySize), y: Int.random(in: 0...mapArraySize))
 	}
 	
 	var toPrint = ""
-	for row in board {
+	for row in map {
 		for cell in row {
 			switch cell {
 				case .g: toPrint+=("  ".onGreen)
@@ -124,7 +129,7 @@ while true {
 		toPrint+="\n"
 	}
 	print(toPrint)
-	Thread.sleep(forTimeInterval: 0.25)
+	Thread.sleep(forTimeInterval: TimeInterval(snakeSpeed))
 
 	// clear the terminal
 	print("\u{001B}[H\u{001B}[2J")
